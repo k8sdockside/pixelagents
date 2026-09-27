@@ -1,0 +1,28 @@
+{
+    "name": "k8sdockside-pixelagents",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Pixel agents: a K8s Dockside plugin that draws the cluster as a pixel-art office -- a worker per node, as busy as the node, and a floor that turns to lava when the cluster is in trouble.",
+    "license": "Apache-2.0",
+    "author": "K8s Dockside",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/k8sdockside/pixelagents"
+    },
+    "type": "module",
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "build": "k8sdockside-plugin build",
+        "watch": "k8sdockside-plugin watch",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "check": "npm run typecheck && npm run test && k8sdockside-plugin check"
+    },
+    "devDependencies": {
+        "@k8sdockside/plugin-sdk": "^1.0.0",
+        "typescript": "^6.0.3",
+        "vitest": "^4.1.11"
+    }
+}

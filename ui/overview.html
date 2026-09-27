@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Pixel agents</title>
+        <link rel="stylesheet" href="pixelagents.css" />
+        <!-- The bridge to the app. Served by K8s Dockside itself, always at this path. -->
+        <script src="/plugin-ui/_sdk/k8sdockside.js"></script>
+    </head>
+    <body class="page">
+        <p id="error" class="banner error" role="alert" hidden></p>
+
+        <header class="top">
+            <div>
+                <h1 id="title">The office</h1>
+                <p>A person for every node, as busy as the node. Trouble shows as litter, then cracks; the floor only turns to lava when things are really bad.</p>
+            </div>
+            <div id="tools" class="tools"></div>
+        </header>
+
+        <!-- Staff, busyness, and how the floor is holding up. -->
+        <section id="meters" class="meters" aria-live="polite"></section>
+
+        <section id="settings" class="settings" aria-label="Settings" hidden></section>
+
+        <div id="stage" class="stage">
+            <canvas id="office" role="img" aria-label="The office"></canvas>
+            <div id="tip" class="tip" role="tooltip" hidden></div>
+            <div id="loading" class="loading">
+                <span class="pulse"></span>
+                <span>Opening the office…</span>
+            </div>
+        </div>
+        <p class="legend">
+            Control planes sit in the glass room; workers on the open floor. Hover a person for their node, click to open it.
+            Blue screens are nodes that are down, smoking screens nodes with problems, the couch is for cordoned ones, boxes by
+            the door are pods no node has taken, the server racks are the nodes four to a rack, and the hooded figures are the
+            security findings.
+        </p>
+
+        <!-- What is wrong: what heats the floor, grouped, each object a link. -->
+        <section id="findings" class="findings"></section>
+
+        <footer id="foot" class="foot"></footer>
+
+        <!-- A classic script, not type="module": a sandboxed frame has an
+             opaque origin, so a module would be a cross-origin load.
+             Built from src/pages/overview.ts. -->
+        <script src="overview.js"></script>
+    </body>
+</html>

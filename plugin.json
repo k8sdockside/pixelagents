@@ -1,0 +1,76 @@
+{
+    "$schema": "https://raw.githubusercontent.com/k8sdockside/k8sdockside/main/docs/plugin.schema.json",
+    "id": "pixelagents",
+    "name": "Pixel agents",
+    "version": "1.0.0",
+    "minAppVersion": "0.1.1",
+    "tagline": "the cluster as a pixel-art office",
+    "category": "observability",
+    "icon": "users",
+    "logo": "logo.svg",
+    "author": "K8s Dockside",
+    "docs": "https://github.com/k8sdockside/pixelagents",
+    "links": [
+        {
+            "label": "Source",
+            "url": "https://github.com/k8sdockside/pixelagents"
+        },
+        {
+            "label": "Pixel Agents, the inspiration",
+            "url": "https://www.mdskills.ai/skills/pixel-agents"
+        }
+    ],
+    "description": "The cluster drawn as a pixel-art office. Every node gets a person: control planes in the glass room, workers on the open floor. A one-node cluster is a manager alone with some empty desks; forty workers behind three control planes fill the floor.\n\nHow hard each person works follows their node's CPU, memory and disk: quiet nodes wander off for coffee, busy ones type without looking up, and one near its limits sweats. A node that is down sleeps in front of a blue screen; a cordoned one is on the couch.\n\nWhat is wrong shows on the floor, in stages. Crash loops, pods that cannot pull or schedule, nodes under pressure, warning events, privileged or root containers and unpinned images all count. A little trouble leaves litter around the desks that have it, more brings cracks and smoking monitors, and only when things are really bad does the floor give way to lava. Security findings also let hooded intruders in. A bigger cluster gets a bigger office: wider aisles, a meeting table, a bigger lounge and more server racks. Everything that heats the floor is listed under the office, each object a link.\n\nThe settings change the office's size and headcount, how busy it gets and which resources count, how sensitive it is to trouble, when (and whether) the lava comes, and how it all looks. Usage comes from node-exporter via Prometheus or VictoriaMetrics when there is one, from metrics-server when not, and is estimated from pod requests as a last resort.",
+    "requires": [
+        {
+            "kind": "nodes",
+            "label": "Nodes"
+        },
+        {
+            "kind": "pods",
+            "label": "Pods"
+        },
+        {
+            "kind": "crd:nodes.metrics.k8s.io",
+            "label": "metrics-server (node usage)",
+            "optional": true
+        }
+    ],
+    "ui": {
+        "kinds": [
+            "events"
+        ]
+    },
+    "overview": {
+        "entry": "overview.html"
+    },
+    "charts": [
+        {
+            "id": "node-cpu",
+            "label": "CPU busy per node",
+            "attach": "overview",
+            "unit": "percent",
+            "legend": "key",
+            "description": "The share of each node's CPU time not spent idle over five minutes, from node-exporter, named by node. Read by the office, not drawn.",
+            "query": "label_join((1 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))) * on (instance) group_left (nodename) max by (instance, nodename) (node_uname_info), \"key\", \"|\", \"nodename\", \"instance\")"
+        },
+        {
+            "id": "node-memory",
+            "label": "Memory used per node",
+            "attach": "overview",
+            "unit": "percent",
+            "legend": "key",
+            "description": "The share of each node's memory not available to new work, from node-exporter, named by node. Read by the office, not drawn.",
+            "query": "label_join((1 - sum by (instance) (node_memory_MemAvailable_bytes) / sum by (instance) (node_memory_MemTotal_bytes)) * on (instance) group_left (nodename) max by (instance, nodename) (node_uname_info), \"key\", \"|\", \"nodename\", \"instance\")"
+        },
+        {
+            "id": "node-disk",
+            "label": "Fullest disk per node",
+            "attach": "overview",
+            "unit": "percent",
+            "legend": "key",
+            "description": "Each node's fullest real filesystem, from node-exporter, named by node. Read by the office, not drawn.",
+            "query": "label_join((max by (instance) (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay|squashfs|ramfs|nsfs|autofs|fuse.*\",mountpoint!~\"/run.*|/boot.*|/var/lib/kubelet/pods.*\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay|squashfs|ramfs|nsfs|autofs|fuse.*\",mountpoint!~\"/run.*|/boot.*|/var/lib/kubelet/pods.*\"})) * on (instance) group_left (nodename) max by (instance, nodename) (node_uname_info), \"key\", \"|\", \"nodename\", \"instance\")"
+        }
+    ]
+}
