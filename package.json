@@ -21,7 +21,7 @@
         "check": "npm run typecheck && npm run test && k8sdockside-plugin check"
     },
     "devDependencies": {
-        "@k8sdockside/plugin-sdk": "^1.0.0",
+        "@k8sdockside/plugin-sdk": "^1.1.0",
         "typescript": "^7.0.2",
         "vitest": "^5.0.5"
     }
